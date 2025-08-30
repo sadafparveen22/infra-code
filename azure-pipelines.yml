@@ -1,7 +1,3 @@
-# Starter pipeline
-# Start with a minimal pipeline that you can customize to build and deploy your code.
-# Add steps that build, run tests, deploy, and more:
-# https://aka.ms/yaml
 
 trigger:
 - main
@@ -14,6 +10,7 @@ steps:
   inputs:
     terraformVersion: 'latest'
 - task: TerraformTask@5
+  displayName: terraform init
   inputs:
     provider: 'azurerm'
     command: 'init'
@@ -22,16 +19,21 @@ steps:
     backendAzureRmResourceGroupName: 'rg'
     backendAzureRmStorageAccountName: 'woolenstorage'
     backendAzureRmContainerName: 'woolen-container'
-    backendAzureRmKey: 'woolen-statefile'
+    backendAzureRmKey: 'woolen.tfstate'
 - task: TerraformTask@5
+  displayName: terraform validate
   inputs:
     provider: 'azurerm'
     command: 'validate'
 - task: TerraformTask@5
+  displayName: terraform plan
   inputs:
     provider: 'azurerm'
     command: 'plan'
+    environmentServiceNameAzureRM: 'my-service-connection'
 - task: TerraformTask@5
+  displayName: terraform apply
   inputs:
     provider: 'azurerm'
     command: 'apply'
+    environmentServiceNameAzureRM: 'my-service-connection'
